@@ -22,7 +22,7 @@ foreach ($servers as $server) {
 }
 
 // Done.
-echo "Done! Moved {$counter} accounts to destination.";
+echo "Done! Moved {$counter} accounts to destination.\n\n";
 
 if (!empty($mail)) {
     $mg->sendMessage($mail['domain'], ['from' => $mail['from'], 'to' => $mail['to'], 'subject' => 'Backup Complete', 'text' => 'Backup for ' . date("F j, Y g:i A") . ' completed. Backed up ' . $counter . ' accounts in total.']);

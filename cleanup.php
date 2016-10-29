@@ -29,7 +29,7 @@ foreach ($servers as $server) {
     echo "\n";
 }
 
-echo "Done. Processed {$counter} accounts and {$files} backup files.";
+echo "Done. Processed {$counter} accounts and {$files} backup files.\n\n";
 
 if (!empty($mail)) {
     $mg->sendMessage($mail['domain'], ['from' => $mail['from'], 'to' => $mail['to'], 'subject' => 'Cleanup Complete', 'text' => 'Backup cleanup for ' . date("F j, Y g:i A") . ' completed. Backed up ' . $counter . ' accounts and ' . $files . ' files in total.']);

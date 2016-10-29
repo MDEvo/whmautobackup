@@ -45,13 +45,15 @@ php cleanup.php
 
 This will download ALL the **latest** backups for each account to the `retrieved` folder.
 
-> This is in **BETA**. It does not work on accounts whose primary domains are not pointed to the cPanel server it is in.
+> This is in **BETA**. It does not work on accounts whose primary domains are not pointed to the cPanel server it is in. It also messes up bandwidth quotas, as cPanel calculates each retrieval as a *download*, hence adding to the user's bandwidth usage. Lastly, it may expose users to having their backups publicly available (see bullet below) although only temporary.
 
 ```
 php retrieve.php
 ```
 
 The process will take a long time depending on the number of accounts and the backup file sizes and your internet speed.
+
+* The process moves a user's backup file to the public_html directory where it can be downloaded by using the account's main domain. It *may* pose as a security risk if an attacker were to guess the filename (it is date-based) or if there are no index files that will hide a directory listing. **Use this only as your last resort.**
 
 # License
 
