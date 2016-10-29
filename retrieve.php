@@ -60,12 +60,12 @@ foreach ($servers as $server) {
             // Get main domain
             $main = json_decode($$name->execute_action('3', 'DomainInfo', 'list_domains', $account->user));
             $main = $main->result->data->main_domain;
-            if (!copy("http://" . $main . "/" . $latest, $transfer.$latest)) {
+            if (!@copy("http://" . $main . "/" . $latest, $transfer.$latest)) {
                 $failed[] = $account->user;
                 echo "Failed to create backup for {$account->user}!";
             } else {
                 echo " OK!\n";
-                echo "Filesize: " . number_format(filesize($transfer.$latest) / 2048, 2) . " MB";
+                echo "\tFilesize: " . number_format(filesize($transfer.$latest) / 1048576, 2) . " MB\n\n";
                 $success[] = $account->user;
             }
             $counter++;
