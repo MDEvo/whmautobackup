@@ -62,7 +62,7 @@ foreach ($servers as $server) {
             $main = $main->result->data->main_domain;
             if (!@copy("http://" . $main . "/" . $latest, $transfer.$latest)) {
                 $failed[] = $account->user;
-                echo "Failed to create backup for {$account->user}!\n\n";
+                echo " Failed to create backup for {$account->user}!\n\n";
             } else {
                 echo " OK!\n";
                 echo "\tFilesize: " . number_format(filesize($transfer.$latest) / 1048576, 2) . " MB\n\n";
