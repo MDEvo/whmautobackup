@@ -13,10 +13,11 @@ A no-nonsense PHP-based utility for backing-up accounts under non-root resellers
 * Uses the [cPanel API 1 Library by mgufrone](https://github.com/mgufrone/cpanel-php)
 * Destinations supported: homedir, ftp, scp (cPanel defaults)
 * Cleanup script for pruning backup files
+* Retrieval script (**BETA**) for downloading backups
 
 # Known Bugs
 
-* FTP and SCP options sometimes still go through homedir even though explicitly stated in the API to use said options (probably a bug with the deprecated API). Unless a similar feature is made available to the newer cPanel APIs, I'll work on adjusting the code.
+* FTP and SCP options sometimes still go through homedir even though explicitly stated in the API to use said options (probably a bug with the deprecated API). Unless a similar feature is made available to the newer cPanel APIs, I'll work on adjusting the code. Until then, try manual retrieval.
 
 Report bugs via the bug tracker, or if it's security-related, send an e-mail to [liam@rack63.com](mailto:liam@rack63.com).
 
@@ -39,6 +40,18 @@ php cleanup.php
 ```
 
 **NOTE:** This may take a long time depending on the number of backups. Do this regularly so it only has to process around 1 to 5 files per account.
+
+# Manual Retrieval
+
+This will download ALL the **latest** backups for each account to the `retrieved` folder.
+
+> This is in **BETA**. It does not work on accounts whose primary domains are not pointed to the cPanel server it is in.
+
+```
+php retrieve.php
+```
+
+The process will take a long time depending on the number of accounts and the backup file sizes and your internet speed.
 
 # License
 

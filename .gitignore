@@ -1,2 +1,4 @@
 config.php
 .idea/
+app/config.php
+retrieved/*
