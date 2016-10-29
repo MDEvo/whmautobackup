@@ -12,6 +12,7 @@ A no-nonsense PHP-based utility for backing-up accounts under non-root resellers
 * Optional Mailgun support for cron alerts
 * Uses the [cPanel API 1 Library by mgufrone](https://github.com/mgufrone/cpanel-php)
 * Destinations supported: homedir, ftp, scp (cPanel defaults)
+* Cleanup script for pruning backup files
 
 # Known Bugs
 
