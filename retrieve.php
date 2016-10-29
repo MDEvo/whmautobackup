@@ -62,7 +62,7 @@ foreach ($servers as $server) {
             $main = $main->result->data->main_domain;
             if (!@copy("http://" . $main . "/" . $latest, $transfer.$latest)) {
                 $failed[] = $account->user;
-                echo "Failed to create backup for {$account->user}!";
+                echo "Failed to create backup for {$account->user}!\n\n";
             } else {
                 echo " OK!\n";
                 echo "\tFilesize: " . number_format(filesize($transfer.$latest) / 1048576, 2) . " MB\n\n";
@@ -81,3 +81,7 @@ echo "Done.\n";
 $success_count = count($success);
 $failed_count = count($failed);
 echo "\nTotal: {$counter}\nSuccess: {$success_count}\nFailed: {$failed_count}";
+
+if (!empty($mail)) {
+    $mg->sendMessage($mail['domain'], ['from' => $mail['from'], 'to' => $mail['to'], 'subject' => 'Retrieval Complete', 'text' => 'Backup retrieval for ' . date("F j, Y g:i A") . ' completed. Retrieved ' . $success_count . ' accounts with ' . $failed_count . ' failures, ' . $counter . ' in total.<br /><br />Failed: ' . print_r($failed)]);
+}
