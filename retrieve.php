@@ -80,7 +80,7 @@ foreach ($servers as $server) {
 echo "Done.\n";
 $success_count = count($success);
 $failed_count = count($failed);
-echo "\nTotal: {$counter}\nSuccess: {$success_count}\nFailed: {$failed_count}";
+echo "\nTotal: {$counter}\nSuccess: {$success_count}\nFailed: {$failed_count}\n\n";
 
 if (!empty($mail)) {
     $mg->sendMessage($mail['domain'], ['from' => $mail['from'], 'to' => $mail['to'], 'subject' => 'Retrieval Complete', 'text' => 'Backup retrieval for ' . date("F j, Y g:i A") . ' completed. Retrieved ' . $success_count . ' accounts with ' . $failed_count . ' failures, ' . $counter . ' in total.<br /><br />Failed: ' . print_r($failed)]);
