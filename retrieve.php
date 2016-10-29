@@ -27,15 +27,15 @@ $counter = 0;
 $success = []; // Array for successful transfers
 $failed = []; // Array for failed downloads
 $exclude = []; // Excluded users
-$transfer = 'retrieved/' . date("Y-m-d") . '/';
-if (!is_dir($transfer)) {
-    mkdir($transfer, 0755, true);
-}
 
 // List accounts
 foreach ($servers as $server) {
     $name = $server['name'];
     unset($server['name']);
+    $transfer = 'retrieved/' . $name . '/' . date("Y-m-d") . '/';
+    if (!is_dir($transfer)) {
+        mkdir($transfer, 0755, true);
+    }
     $$name = new \Gufy\CpanelPhp\Cpanel($server);
     echo "=======================\nAccounts for {$name}\n=======================\n";
     $accounts = json_decode($$name->listaccts());
