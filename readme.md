@@ -29,6 +29,16 @@ php run.php
 
 You can also set `run.php` to run in specified intervals using a cron job.
 
+# Cleanup
+
+To prune all accounts of backup files, open your terminal and execute:
+
+```
+php cleanup.php
+```
+
+**NOTE:** This may take a long time depending on the number of backups. Do this regularly so it only has to process around 1 to 5 files per account.
+
 # License
 
 This script is under the [MIT Open Source License](https://opensource.org/licenses/MIT).
