@@ -9,6 +9,7 @@ $counter = 0;
 foreach ($servers as $server) {
     $name = $server['name'];
     unset($server['name']);
+    $server['host'] = "https://" . $server['host'] . ":2087";
     $$name = new \Gufy\CpanelPhp\Cpanel($server);
     echo "=======================\nAccounts for {$name}\n=======================\n";
     $accounts = json_decode($$name->listaccts());

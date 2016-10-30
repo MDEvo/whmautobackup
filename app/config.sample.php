@@ -6,14 +6,14 @@
 $servers = [
     [
         'name'  =>  'srv1', // must be a unique name (for display purposes only)
-        'host'  =>  'https://cpanelhost.com:2087',
+        'host'  =>  'cpanelhost.com', // do not add http/https or ports!
         'username'  =>  'my_username',
         'auth_type' =>  'password', // set to 'hash' if you want to use your access hash
         'password'  =>  'my_password' // password for whm, or your access hash
     ],
     [
         'name'  =>  'srv2', // must be a unique name (for display purposes only)
-        'host'  =>  'https://cpanelhost2.com:2087',
+        'host'  =>  'cpanelhost2.com', // do not add http/https or ports!
         'username'  =>  'my_username',
         'auth_type' =>  'password', // set to 'hash' if you want to use your access hash
         'password'  =>  'my_password' // password for whm, or your access hash

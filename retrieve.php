@@ -3,36 +3,20 @@
 // Get the kernel
 require "kernel.php";
 
-// Display warning
-$warning = <<<EOF
-=========================================================
-WARNING
-=========================================================
-This option is in BETA. This is a workaround in case
-your current setup does not transfer files to the
-remote destination even though it is explicitly specified
-in the configs. Do NOT rely on this method.
-
-This may take a VERY long time to finish. Do NOT, in
-any circumstance, interrupt the job.
-=========================================================
-\nPress ENTER to continue, or hit CTRL+C to quit...
-EOF;
-echo $warning;
-$accept = trim(fgets(STDIN));
-
-echo "\n";
-
-$counter = 0;
+// Arrays for results and exclusions (usernames)
 $success = []; // Array for successful transfers
 $failed = []; // Array for failed downloads
 $exclude = []; // Excluded users
 
-// List accounts
+// Directory for transfers
+
+// List Accounts
 foreach ($servers as $server) {
     $name = $server['name'];
     unset($server['name']);
-    $transfer = 'retrieved/' . $name . '/' . date("Y-m-d") . '/';
+    $ftp_server = $server['host'];
+    $server['host'] = "https://" . $server['host'] . ":2087";
+    $transfer = __DIR__ . '/retrieved/' . $name . '/' . date("Y-m-d") . '/';
     if (!is_dir($transfer)) {
         mkdir($transfer, 0755, true);
     }
@@ -43,9 +27,10 @@ foreach ($servers as $server) {
         if (!in_array($account, $exclude)) {
             $data = json_decode($$name->execute_action('2', 'Backups', 'listfullbackups', $account->user));
             $total = count($data->cpanelresult->data);
-            echo "Processing backup file for {$account->user}...\n";
+            echo "Processing backup file for {$account->user}...";
             $latest = "";
             $latest_time = 0;
+
             // Determine the latest backup
             foreach ($data->cpanelresult->data as $file) {
                 if ($latest_time < $file->time) {
@@ -53,25 +38,40 @@ foreach ($servers as $server) {
                     $latest = $file->file;
                 }
             }
-            echo "\tRetrieving {$latest}...";
-            // Move
-            $$name->execute_action('2', 'Fileman', 'fileop', $account->user, ['op' => 'chmod', 'metadata' => '0755', 'sourcefiles' => $latest]);
-            $$name->execute_action('2', 'Fileman', 'fileop', $account->user, ['op' => 'move', 'sourcefiles' => $latest, 'destfiles' => 'public_html']);
+
+            // Create a temporary FTP account
+            $ftp_user = $account->user . "_temp";
+            $ftp_password = gen_pass(16);
+            $ftp_result = json_decode($$name->execute_action('2', 'Ftp', 'addftp', $account->user, ['user' => $ftp_user, 'pass' => $ftp_password, 'quota' => 0, 'homedir' => '/']));
+
             // Get main domain
             $main = json_decode($$name->execute_action('3', 'DomainInfo', 'list_domains', $account->user));
             $main = $main->result->data->main_domain;
-            if (!@copy("http://" . $main . "/" . $latest, $transfer.$latest)) {
-                $failed[] = $account->user;
-                echo " Failed to create backup for {$account->user}!\n\n";
-            } else {
+
+            // Set proper FTP user
+            $ftp_user = $ftp_user . "@" . $main;
+
+            // Sign in to FTP and retrieve the archive
+            $ftp_conn = ftp_connect($ftp_server);
+            $login = ftp_login($ftp_conn, $ftp_user, $ftp_password);
+            ftp_pasv($ftp_conn, true);
+            $get_file = $latest;
+            $local = $transfer . $latest;
+            $fp = fopen($local, "w");
+            if (ftp_fget($ftp_conn, $fp, $file, FTP_BINARY, 0)) {
+                fclose($fp);
                 echo " OK!\n";
-                echo "\tFilesize: " . number_format(filesize($transfer.$latest) / 1048576, 2) . " MB\n\n";
+                echo "Filesize: " . number_format(filesize($local) / 1048576, 2) . " MB\n\n";
                 $success[] = $account->user;
+            } else {
+                fclose($fp);
+                echo " Failed!\n\n";
+                $failed[] = $account->user;
             }
-            $counter++;
-            // Move back to original
-            $$name->execute_action('2', 'Fileman', 'fileop', $account->user, ['op' => 'chmod', 'metadata' => '0600', 'sourcefiles' => "public_html/" . $latest]);
-            $$name->execute_action('2', 'Fileman', 'fileop', $account->user, ['op' => 'move', 'sourcefiles' => "public_html/" . $latest, 'destfiles' => '../']);
+            ftp_close($ftp_conn);
+
+            // Delete FTP account
+            $$name->execute_action('2', 'Ftp', 'delftp', $account->user, ['user' => $ftp_user, 'destroy' => 0]);
         }
     }
     echo "\n";
@@ -83,5 +83,15 @@ $failed_count = count($failed);
 echo "\nTotal: {$counter}\nSuccess: {$success_count}\nFailed: {$failed_count}\n\n";
 
 if (!empty($mail)) {
-    $mg->sendMessage($mail['domain'], ['from' => $mail['from'], 'to' => $mail['to'], 'subject' => 'Retrieval Complete', 'text' => 'Backup retrieval for ' . date("F j, Y g:i A") . ' completed. Retrieved ' . $success_count . ' accounts with ' . $failed_count . ' failures, ' . $counter . ' in total.<br /><br />Failed: ' . print_r($failed, true)]);
+    $date = date("F j, Y g:i A");
+    $tz = date_default_timezone_get();
+    $failed_acc = print_r($failed, true);
+    $message = <<<MSG
+Backup retrieval for {$date} {$tz} completed.<br /><br />
+Success: {$success_count}<br />
+Failed: {$failed_count}<br /><br />
+Failed Accounts:<br /><br />
+{$failed_acc}
+MSG;
+    $mg->sendMessage($mail['domain'], ['from' => $mail['from'], 'to' => $mail['to'], 'subject' => 'Retrieval Complete', 'text' => $message]);
 }

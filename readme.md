@@ -13,7 +13,7 @@ A no-nonsense PHP-based utility for backing-up accounts under non-root resellers
 * Uses the [cPanel API 1 Library by mgufrone](https://github.com/mgufrone/cpanel-php)
 * Destinations supported: homedir, ftp, scp (cPanel defaults)
 * Cleanup script for pruning backup files
-* Retrieval script (**BETA**) for downloading backups
+* Retrieval scripts for downloading backups
 
 # Known Bugs
 
@@ -43,12 +43,22 @@ php cleanup.php
 
 # Manual Retrieval
 
-This will download ALL the **latest** backups for each account to the `retrieved` folder.
-
-> This is in **BETA**. It does not work on accounts whose primary domains are not pointed to the cPanel server it is in. It also messes up bandwidth quotas, as cPanel calculates each retrieval as a *download*, hence adding to the user's bandwidth usage. Lastly, it may expose users to having their backups publicly available (see bullet below) although only temporary.
+This process creates a temporary FTP user and downloads the backup archive to the `retrieved` folder.
 
 ```
 php retrieve.php
+```
+
+> If you have problems, disable Passive mode by commenting-out `ftp_pasv($ftp_conn, true);` in `retrieve.php`.
+
+# Unsafe Manual Retrieval
+
+This will download ALL the **latest** backups for each account to the `retrieved` folder.
+
+> This is **unsafe**. It does not work on accounts whose primary domains are not pointed to the cPanel server it is in. It also messes up bandwidth quotas, as cPanel calculates each retrieval as a *download*, hence adding to the user's bandwidth usage. Lastly, it may expose users to having their backups publicly available (see bullet below) although only temporary.
+
+```
+php unsafe_retrieve.php
 ```
 
 The process will take a long time depending on the number of accounts and the backup file sizes and your internet speed.

@@ -10,6 +10,7 @@ $files = 0;
 foreach ($servers as $server) {
     $name = $server['name'];
     unset($server['name']);
+    $server['host'] = "https://" . $server['host'] . ":2087";
     $$name = new \Gufy\CpanelPhp\Cpanel($server);
     echo "=======================\nAccounts for {$name}\n=======================\n";
     $accounts = json_decode($$name->listaccts());
@@ -20,7 +21,7 @@ foreach ($servers as $server) {
         foreach ($data->cpanelresult->data as $file) {
             // Delete
             $$name->execute_action('2', 'Fileman', 'fileop', $account->user, ['op' => 'unlink', 'sourcefiles' => $file->file]);
-            echo "\tFile {$file->file} deleted.\n";
+            echo "File {$file->file} deleted.\n";
             $files++;
         }
         echo "Cleanup for account {$account->user} done.\n\n";
