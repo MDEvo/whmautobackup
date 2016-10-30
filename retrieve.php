@@ -94,5 +94,5 @@ Failed: {$failed_count}<br /><br />
 Failed Accounts:<br /><br />
 {$failed_acc}
 MSG;
-    $mg->sendMessage($mail['domain'], ['from' => $mail['from'], 'to' => $mail['to'], 'subject' => 'Retrieval Complete', 'text' => $message]);
+    $mg->sendMessage($mail['domain'], ['from' => $mail['from'], 'to' => $mail['to'], 'subject' => 'Retrieval Complete', 'html' => $message]);
 }
