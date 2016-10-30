@@ -58,7 +58,7 @@ foreach ($servers as $server) {
             $get_file = $latest;
             $local = $transfer . $latest;
             $fp = fopen($local, "w");
-            if (ftp_fget($ftp_conn, $fp, $file, FTP_BINARY, 0)) {
+            if (ftp_fget($ftp_conn, $fp, $get_file, FTP_BINARY, 0)) {
                 fclose($fp);
                 echo " OK!\n";
                 echo "Filesize: " . number_format(filesize($local) / 1048576, 2) . " MB\n\n";
