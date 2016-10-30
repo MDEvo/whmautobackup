@@ -80,6 +80,7 @@ foreach ($servers as $server) {
 echo "Done.\n";
 $success_count = count($success);
 $failed_count = count($failed);
+$counter = count($success_count) + count($failed_count);
 echo "\nTotal: {$counter}\nSuccess: {$success_count}\nFailed: {$failed_count}\n\n";
 
 if (!empty($mail)) {
