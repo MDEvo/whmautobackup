@@ -19,7 +19,7 @@ A no-nonsense PHP-based utility for backing-up accounts under non-root resellers
 
 * FTP and SCP options sometimes still go through homedir even though explicitly stated in the API to use said options (probably a bug with the deprecated API). Unless a similar feature is made available to the newer cPanel APIs, I'll work on adjusting the code. Until then, try manual retrieval.
 
-Report bugs via the bug tracker, or if it's security-related, send an e-mail to [liam@rack63.com](mailto:liam@rack63.com).
+Report bugs via the bug tracker, or if it's security-related, send an e-mail to [liam@demafelix.me](mailto:liam@demafelix.me).
 
 # Usage
 
