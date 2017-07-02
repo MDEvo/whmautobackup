@@ -1,5 +1,9 @@
 <?php
 
+// Require
+require 'vendor/autoload.php';
+use Mailgun\Mailgun;
+
 // Get config
 require "app/config.php";
 
@@ -7,8 +11,5 @@ require "app/config.php";
 require "app/functions.php";
 
 if (!empty($mail)) {
-  require 'vendor/autoload.php';
-  use Mailgun\Mailgun;
-
   $mg = new Mailgun($mail['key']);
 }
